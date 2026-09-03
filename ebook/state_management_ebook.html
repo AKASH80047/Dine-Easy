@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>State Management in Flutter - Complete Hindi Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --primary: #1a1a2e;
+    --secondary: #16213e;
+    --accent: #0f3460;
+    --highlight: #e94560;
+    --gold: #f5a623;
+    --green: #27ae60;
+    --blue: #2980b9;
+    --purple: #8e44ad;
+    --orange: #e67e22;
+    --teal: #16a085;
+    --red: #c0392b;
+    --light-bg: #f8f9fa;
+    --code-bg: #1e1e2e;
+    --code-text: #cdd6f4;
+    --border: #dee2e6;
+    --text-dark: #1a1a2e;
+    --text-gray: #555;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-dark);
+    background: white;
+  }
+
+  /* ========== COVER PAGE ========== */
+  .cover-page {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #e94560 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-page::before {
+    content: '';
+    position: absolute;
+    top: -50px; left: -50px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(233, 69, 96, 0.15);
+  }
+
+  .cover-page::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(15, 52, 96, 0.3);
+  }
+
+  .cover-badge {
+    background: var(--gold);
+    color: #1a1a2e;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+
+  .cover-title {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-subtitle {
+    font-size: 22px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-desc {
+    font-size: 16px;
+    color: rgba(255,255,255,0.85);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-divider {
+    width: 80px; height: 4px;
+    background: var(--highlight);
+    margin: 20px auto;
+    border-radius: 2px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+
+  .cover-feature {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 13px;
+  }
+
+  .cover-stats {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    position: relative; z-index: 1;
+  }
+
+  .cover-stat {
+    text-align: center;
+  }
+
+  .cover-stat-num {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+  }
+
+  .cover-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .cover-author {
+    margin-top: 50px;
+    position: relative; z-index: 1;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+  }
+
+  .cover-author span {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* ========== PAGE LAYOUT ========== */
+  .page-break { page-break-after: always; }
+  .page-break-before { page-break-before: always; }
+
+  /* ========== TOC ========== */
+  .toc-page {
+    padding: 60px 60px;
+    page-break-after: always;
+  }
+
+  .toc-title {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 10px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid var(--highlight);
+  }
+
+  .toc-subtitle {
+    color: var(--text-gray);
+    margin-bottom: 40px;
+    font-size: 14px;
+  }
+
+  .toc-section {
+    margin-bottom: 8px;
+  }
+
+  .toc-chapter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .toc-sub {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 30px;
+    color: var(--text-gray);
+    font-size: 13px;
+    border-left: 2px solid var(--border);
+    margin-left: 15px;
+  }
+
+  .toc-bonus {
+    background: linear-gradient(135deg, var(--highlight) 0%, var(--purple) 100%);
+    color: white;
+    font-weight: 700;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ========== CHAPTER LAYOUT ========== */
+  .chapter {
+    padding: 60px 60px;
+    page-break-before: always;
+  }
+
+  .chapter-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-header::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .chapter-num {
+    font-size: 13px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .chapter-title {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .chapter-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.7;
+  }
+
+  /* ========== CONTENT ELEMENTS ========== */
+  h1 {
+    font-family: 'Noto Serif Devanagari', serif;
+    font-size: 28px;
+    color: var(--primary);
+    margin: 35px 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--highlight);
+  }
+
+  h2 {
+    font-size: 22px;
+    color: var(--accent);
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--highlight);
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 18px;
+    color: var(--primary);
+    margin: 22px 0 10px;
+    font-weight: 700;
+  }
+
+  h4 {
+    font-size: 16px;
+    color: var(--accent);
+    margin: 18px 0 8px;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 14px;
+    line-height: 1.9;
+    color: #333;
+    font-size: 14px;
+  }
+
+  /* ========== INFO BOXES ========== */
+  .info-box {
+    background: #e8f4f8;
+    border-left: 5px solid var(--blue);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+
+  .info-box-title {
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .warning-box {
+    background: #fff3cd;
+    border-left: 5px solid var(--orange);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+
+  .warning-box-title {
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+
+  .success-box {
+    background: #d4edda;
+    border-left: 5px solid var(--green);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+
+  .success-box-title {
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .tip-box {
+    background: linear-gradient(135deg, #f8f0ff, #fce4ff);
+    border: 2px solid var(--purple);
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+  }
+
+  .tip-box-title {
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .real-life-box {
+    background: linear-gradient(135deg, #fff9e6, #fff3cc);
+    border: 2px solid var(--gold);
+    padding: 20px 24px;
+    border-radius: 12px;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .real-life-box::before {
+    content: '🌟 Real-Life Example';
+    position: absolute;
+    top: -12px; left: 20px;
+    background: var(--gold);
+    color: #1a1a2e;
+    padding: 3px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* ========== CODE BLOCKS ========== */
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 12px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    background: #2d2d44;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .code-lang {
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .code-dots {
+    display: flex; gap: 6px;
+  }
+
+  .code-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 20px 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .kw { color: #cba6f7; } /* keywords */
+  .fn { color: #89b4fa; } /* functions */
+  .str { color: #a6e3a1; } /* strings */
+  .num { color: #fab387; } /* numbers */
+  .cm { color: #6c7086; font-style: italic; } /* comments */
+  .cls { color: #f9e2af; } /* classes */
+  .var { color: #cdd6f4; } /* variables */
+  .op { color: #89dceb; } /* operators */
+
+  /* ========== TABLES ========== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  thead tr {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+  }
+
+  thead th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  tbody tr:nth-child(even) { background: #f8f9fa; }
+  tbody tr:hover { background: #e8f4f8; }
+
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #dee2e6;
+    color: #333;
+  }
+
+  /* ========== DIAGRAMS ========== */
+  .diagram {
+    background: var(--light-bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 25px 0;
+    text-align: center;
+  }
+
+  .diagram-title {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+
+  .flow-box {
+    display: inline-block;
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 120px;
+  }
+
+  .flow-box.highlight {
+    background: var(--highlight);
+    border-color: var(--highlight);
+    color: white;
+  }
+
+  .flow-box.green {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .flow-box.gold {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #1a1a2e;
+  }
+
+  .flow-arrow {
+    font-size: 24px;
+    color: var(--highlight);
+    display: block;
+    margin: 5px 0;
+    font-weight: bold;
+  }
+
+  .flow-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+
+  /* ========== INTERVIEW Q&A ========== */
+  .qa-section {
+    margin: 25px 0;
+  }
+
+  .qa-item {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+
+  .qa-question {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .qa-q-num {
+    background: var(--highlight);
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .qa-answer {
+    background: #f8f9ff;
+    padding: 14px 20px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.8;
+    border: 1px solid #e0e7ff;
+    border-top: none;
+  }
+
+  /* ========== EXERCISES ========== */
+  .exercise-box {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+
+  .exercise-title {
+    font-weight: 700;
+    color: var(--green);
+    font-size: 18px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .exercise-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .exercise-num {
+    background: var(--green);
+    color: white;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ========== SUMMARY BOX ========== */
+  .summary-box {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border-radius: 16px;
+    padding: 30px;
+    margin: 30px 0;
+  }
+
+  .summary-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--gold);
+  }
+
+  .summary-point {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+
+  .summary-dot {
+    width: 8px; height: 8px;
+    background: var(--highlight);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* ========== LISTS ========== */
+  ul, ol {
+    padding-left: 25px;
+    margin: 12px 0;
+  }
+
+  li {
+    margin-bottom: 8px;
+    line-height: 1.8;
+    font-size: 14px;
+    color: #333;
+  }
+
+  /* ========== CHEATSHEET ========== */
+  .cheatsheet {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+  }
+
+  .cheat-item {
+    background: var(--light-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    border-top: 3px solid var(--highlight);
+  }
+
+  .cheat-title {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .cheat-content {
+    font-size: 12px;
+    color: var(--text-gray);
+    line-height: 1.7;
+  }
+
+  /* ========== COMPARISON CARDS ========== */
+  .compare-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-top: 4px solid var(--highlight);
+  }
+
+  .compare-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0;
+  }
+
+  .rating-label {
+    font-size: 13px;
+    color: var(--text-gray);
+    min-width: 120px;
+  }
+
+  .stars {
+    color: var(--gold);
+    font-size: 14px;
+  }
+
+  /* ========== SECTION DIVIDER ========== */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 30px 0;
+  }
+
+  .section-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-divider-text {
+    color: var(--text-gray);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ========== ROADMAP ========== */
+  .roadmap-step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .roadmap-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .roadmap-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--highlight), var(--purple));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .roadmap-line {
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(var(--highlight), var(--purple));
+    margin: 5px 0;
+    min-height: 30px;
+  }
+
+  .roadmap-content {
+    background: var(--light-bg);
+    border-radius: 12px;
+    padding: 16px 20px;
+    flex: 1;
+    border: 1px solid var(--border);
+  }
+
+  .roadmap-content h4 {
+    color: var(--primary);
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+
+  .roadmap-content p {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin: 0;
+  }
+
+  /* ========== MIND MAP ========== */
+  .mind-map {
+    background: var(--light-bg);
+    border-radius: 16px;
+    padding: 30px;
+    margin: 25px 0;
+    text-align: center;
+  }
+
+  .mind-center {
+    background: linear-gradient(135deg, var(--primary), var(--highlight));
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 25px;
+  }
+
+  .mind-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+  }
+
+  .mind-node {
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 25px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .mind-node.red { border-color: var(--red); color: var(--red); }
+  .mind-node.green { border-color: var(--green); color: var(--green); }
+  .mind-node.purple { border-color: var(--purple); color: var(--purple); }
+  .mind-node.gold { border-color: var(--gold); color: #b8860b; }
+  .mind-node.teal { border-color: var(--teal); color: var(--teal); }
+  .mind-node.orange { border-color: var(--orange); color: var(--orange); }
+
+  /* ========== BADGE ========== */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-easy { background: #d4edda; color: var(--green); }
+  .badge-medium { background: #fff3cd; color: #856404; }
+  .badge-hard { background: #f8d7da; color: var(--red); }
+  .badge-new { background: #cce5ff; color: #004085; }
+  .badge-important { background: #f8d7da; color: var(--red); }
+
+  /* ========== PRINT STYLES ========== */
+  @media print {
+    .cover-page { page-break-after: always; }
+    .chapter { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    body { font-size: 12px; }
+    .cover-title { font-size: 42px; }
+    pre { white-space: pre-wrap; font-size: 11px; }
+  }
+
+  /* ========== EMOJI STYLE ========== */
+  .emoji { font-style: normal; }
+
+  /* Section Labels */
+  .section-label {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--highlight), var(--purple));
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .highlight-text {
+    color: var(--highlight);
+    font-weight: 700;
+  }
+
+  .definition-box {
+    background: linear-gradient(135deg, #f0f4ff, #e8ecff);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .definition-box::before {
+    content: '📖 परिभाषा';
+    position: absolute;
+    top: -12px; left: 20px;
+    background: var(--accent);
+    color: white;
+    padding: 3px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover-page">
+  <div class="cover-badge">📚 Complete Hindi Guide • 2024</div>
+  <div class="cover-title">State Management</div>
+  <div class="cover-subtitle">Flutter & Dart — Basic to Advanced</div>
+  <div class="cover-divider"></div>
+  <div class="cover-desc">
+    हिंदी में सबसे सरल और सबसे विस्तृत State Management गाइड।<br>
+    Beginners से लेकर Advanced Developers तक — सबके लिए।
+  </div>
+  <div class="cover-features">
+    <div class="cover-feature">✅ 20 Chapters</div>
+    <div class="cover-feature">✅ 300+ Interview Q&A</div>
+    <div class="cover-feature">✅ 7 Real Projects</div>
+    <div class="cover-feature">✅ Code Examples</div>
+    <div class="cover-feature">✅ Diagrams & Flowcharts</div>
+    <div class="cover-feature">✅ Cheatsheets</div>
+    <div class="cover-feature">✅ Roadmap</div>
+    <div class="cover-feature">✅ सरल हिंदी</div>
+  </div>
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <span class="cover-stat-num">20</span>
+      <span class="cover-stat-label">Chapters</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">300+</span>
+      <span class="cover-stat-label">Interview Q&A</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">8</span>
+      <span class="cover-stat-label">Libraries</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">7</span>
+      <span class="cover-stat-label">Projects</span>
+    </div>
+  </div>
+  <div class="cover-author">
+    Written for <span>Absolute Beginners · Students · Freshers · Junior Developers</span>
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="toc-page">
+  <div class="toc-title">📋 विषय सूची (Table of Contents)</div>
+  <p class="toc-subtitle">इस ebook में क्या-क्या है — एक नजर में</p>
+
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 1 — State Management का परिचय</span><span>5</span></div>
+    <div class="toc-sub"><span>State क्या है? • State Management क्यों जरूरी है? • Real-life Examples • State vs Variable</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 2 — State के प्रकार</span><span>12</span></div>
+    <div class="toc-sub"><span>Local • Global • Shared • UI • App • Server • Persistent • Temporary State</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 3 — State का जीवनचक्र (Lifecycle)</span><span>20</span></div>
+    <div class="toc-sub"><span>Create • Read • Update • Delete • UI Rebuild Process</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 4 — State Management के बिना क्या होता है?</span><span>28</span></div>
+    <div class="toc-sub"><span>Prop Drilling • Data Synchronization • Re-rendering • Maintainability</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 5 — Basic State Management</span><span>36</span></div>
+    <div class="toc-sub"><span>Variables • Functions • setState() • Stateful Widget • Counter App • Todo App</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 6 — Data Flow Concepts</span><span>46</span></div>
+    <div class="toc-sub"><span>Parent→Child • Child→Parent • Sibling • One-way • Two-way Data Flow</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 7 — InheritedWidget</span><span>54</span></div>
+    <div class="toc-sub"><span>Concept • Architecture • Example • Advantages & Limitations</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 8 — Provider State Management</span><span>62</span></div>
+    <div class="toc-sub"><span>ChangeNotifier • Provider • Consumer • Selector • MultiProvider • Projects</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 9 — Riverpod</span><span>75</span></div>
+    <div class="toc-sub"><span>Provider • StateProvider • FutureProvider • StreamProvider • StateNotifierProvider</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 10 — Bloc & Cubit</span><span>87</span></div>
+    <div class="toc-sub"><span>Bloc Pattern • Event • State • Bloc • Cubit • Architecture • Projects</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 11 — Redux</span><span>100</span></div>
+    <div class="toc-sub"><span>Store • Action • Reducer • Middleware • Complete Flow • Examples</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 12 — GetX</span><span>110</span></div>
+    <div class="toc-sub"><span>Reactive State • Simple State • Dependency Injection • Navigation</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 13 — MobX</span><span>120</span></div>
+    <div class="toc-sub"><span>Observable • Action • Observer • Computed • Examples</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 14 — Advanced State Management</span><span>130</span></div>
+    <div class="toc-sub"><span>Reactive • Immutable • Normalization • Splitting • Derived • Optimistic UI</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 15 — API State Management</span><span>142</span></div>
+    <div class="toc-sub"><span>Loading • Success • Error States • Retry Logic • Network Handling</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 16 — Authentication State</span><span>152</span></div>
+    <div class="toc-sub"><span>Login • Logout • Session • Token Management • Secure Storage</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 17 — Performance Optimization</span><span>162</span></div>
+    <div class="toc-sub"><span>Rebuild Avoid • Memoization • Selectors • Lazy Loading • Best Practices</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 18 — Clean Architecture</span><span>172</span></div>
+    <div class="toc-sub"><span>Presentation • Domain • Data Layer • Repository • DI • Folder Structure</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 19 — Real Projects (7 Apps)</span><span>185</span></div>
+    <div class="toc-sub"><span>Counter • Todo • Notes • Weather • Auth • E-commerce Cart • Chat App</span><span></span></div>
+  </div>
+  <div class="toc-section">
+    <div class="toc-chapter"><span>Chapter 20 — State Management Comparison</span><span>220</span></div>
+    <div class="toc-sub"><span>Complete Comparison Tables • Learning Curve • Performance • Industry Usage</span><span></span></div>
+  </div>
+
+  <br>
+  <div class="toc-bonus"><span>🎁 Bonus: 300 Interview Questions (Beginner + Intermediate + Advanced)</span><span>235</span></div>
+  <div class="toc-bonus"><span>📝 Best Practices & Common Mistakes</span><span>275</span></div>
+  <div class="toc-bonus"><span>🗺️ Roadmap to Master State Management</span><span>280</span></div>
+  <div class="toc-bonus"><span>📋 Cheatsheets & Revision Notes</span><span>285</span></div>
+  <div class="toc-bonus"><span>🧠 Mind Maps</span><span>290</span></div>
+</div>
+
+<!-- ==================== CHAPTER 1 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 01</div>
+    <div class="chapter-title">State Management का परिचय</div>
+    <div class="chapter-desc">इस chapter में हम सीखेंगे: State क्या होती है, State Management क्या है, यह क्यों जरूरी है, और real-life examples से इसे समझेंगे।</div>
+  </div>
+
+  <h1>1.1 State क्या है? (What is State?)</h1>
+
+  <div class="real-life-box" style="margin-top: 25px;">
+    <p><strong>Real-life Example — एक light switch की कल्पना करो:</strong></p>
+    <p>जब switch <strong>ON</strong> है → बल्ब जल रहा है → यही उसकी <strong>State</strong> है<br>
+    जब switch <strong>OFF</strong> है → बल्ब बुझा है → यह दूसरी <strong>State</strong> है</p>
+    <p>यानी — <strong>किसी चीज़ की अभी की condition/अवस्था को State कहते हैं।</strong></p>
+  </div>
+
+  <div class="definition-box" style="margin-top: 30px;">
+    <p><strong>Technical Definition:</strong> State वह data है जो आपके app में किसी समय पर store होता है और जिसके बदलने पर app की UI (screen) बदल जाती है।</p>
+  </div>
+
+  <p>जब आप कोई app use करते हैं:</p>
+  <ul>
+    <li>🛒 Shopping cart में कितने items हैं? → यह एक State है</li>
+    <li>🔔 Notification badge पर number → यह एक State है</li>
+    <li>😊 Dark mode ON है या OFF? → यह एक State है</li>
+    <li>👤 User logged in है या नहीं? → यह एक State है</li>
+    <li>📊 Loading हो रहा है या data आ गया? → यह एक State है</li>
+  </ul>
+
+  <div class="info-box">
+    <div class="info-box-title">💡 सरल भाषा में:</div>
+    <p>State = App की "याददाश्त" (Memory)<br>
+    जब State बदलती है → Screen (UI) automatically update होती है।</p>
+  </div>
+
+  <h1>1.2 State Management क्या है?</h1>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example — एक Restaurant की कल्पना करो:</strong></p>
+    <p>एक बड़े restaurant में:<br>
+    • 50 tables हैं<br>
+    • हर table पर orders अलग हैं<br>
+    • Kitchen को पता होना चाहिए कि कौन सा order किस table के लिए है<br>
+    • बिल सही आना चाहिए<br>
+    • अगर कोई dish cancel हो तो सबको update मिलनी चाहिए</p>
+    <p>इस सब को manage करना ही <strong>State Management</strong> है!</p>
+  </div>
+
+  <div class="definition-box">
+    <p><strong>State Management का मतलब है:</strong> App में data (State) को सही तरीके से:</p>
+    <ul>
+      <li>Store करना</li>
+      <li>Update करना</li>
+      <li>सही जगह पहुंचाना</li>
+      <li>UI को automatically update करना</li>
+    </ul>
+  </div>
+
+  <h1>1.3 State Management क्यों जरूरी है?</h1>
+
+  <div class="warning-box">
+    <div class="warning-box-title">⚠️ बिना State Management के क्या होता है?</div>
+    <ul>
+      <li>Data एक जगह update हुआ, दूसरी जगह नहीं → <strong>Bug!</strong></li>
+      <li>Screen update नहीं होती जब data बदला → <strong>Bug!</strong></li>
+      <li>Code बहुत complicated हो जाता है → <strong>Maintainability Problem!</strong></li>
+      <li>Team members के code में conflict → <strong>Development Problem!</strong></li>
+    </ul>
+  </div>
+
+  <div class="success-box">
+    <div class="success-box-title">✅ State Management से क्या फायदा?</div>
+    <ul>
+      <li>Data हमेशा consistent रहता है</li>
+      <li>UI automatically update होती है</li>
+      <li>Code clean और organized रहता है</li>
+      <li>Team में काम करना आसान होता है</li>
+      <li>App fast और efficient रहती है</li>
+      <li>Bugs ढूंढना और fix करना आसान होता है</li>
+    </ul>
+  </div>
+
+  <h1>1.4 Real-Life Examples</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Real-Life चीज़</th>
+        <th>State क्या है?</th>
+        <th>State कब बदलती है?</th>
+        <th>App में कैसे दिखती है?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>📱 WhatsApp Message</td>
+        <td>Message भेजा / पढ़ा / नहीं पढ़ा</td>
+        <td>जब message deliver या read हो</td>
+        <td>✓ / ✓✓ / ✓✓ (blue ticks)</td>
+      </tr>
+      <tr>
+        <td>🛒 Amazon Cart</td>
+        <td>Cart में items की संख्या</td>
+        <td>Item add/remove होने पर</td>
+        <td>Cart icon पर number</td>
+      </tr>
+      <tr>
+        <td>🎵 Spotify</td>
+        <td>Song play/pause है</td>
+        <td>Play button दबाने पर</td>
+        <td>Play/Pause icon बदलता है</td>
+      </tr>
+      <tr>
+        <td>📷 Instagram Like</td>
+        <td>Photo liked है या नहीं</td>
+        <td>Heart button दबाने पर</td>
+        <td>Heart red/gray होता है</td>
+      </tr>
+      <tr>
+        <td>🌙 Dark Mode</td>
+        <td>Dark mode ON/OFF</td>
+        <td>Toggle switch दबाने पर</td>
+        <td>Theme पूरी बदल जाती है</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1>1.5 State vs Variable — क्या फर्क है?</h1>
+
+  <div class="info-box">
+    <div class="info-box-title">🤔 यह सवाल हर beginner पूछता है!</div>
+    <p>Variable और State में क्या अंतर है? दोनों data store तो करते हैं...</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>पहलू</th>
+        <th>Variable (साधारण)</th>
+        <th>State (Managed)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>UI Update</td>
+        <td>❌ नहीं होती automatically</td>
+        <td>✅ automatically होती है</td>
+      </tr>
+      <tr>
+        <td>Reactivity</td>
+        <td>❌ Reactive नहीं है</td>
+        <td>✅ Reactive है</td>
+      </tr>
+      <tr>
+        <td>कब use करें</td>
+        <td>जब UI बदलनी न हो</td>
+        <td>जब UI update करनी हो</td>
+      </tr>
+      <tr>
+        <td>Example</td>
+        <td>int x = 5;</td>
+        <td>setState(() { count = 5; })</td>
+      </tr>
+      <tr>
+        <td>Flutter में</td>
+        <td>Normal variable</td>
+        <td>State object</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Variable vs State</span>
+      <div class="code-dots">
+        <div class="code-dot dot-red"></div>
+        <div class="code-dot dot-yellow"></div>
+        <div class="code-dot dot-green"></div>
+      </div>
+    </div>
+    <pre>
+<span class="cm">// ❌ यह काम नहीं करेगा — UI update नहीं होगी</span>
+<span class="kw">class</span> <span class="cls">WrongExample</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">int</span> <span class="var">count</span> = <span class="num">0</span>;  <span class="cm">// साधारण variable</span>
+  
+  <span class="fn">onPressed</span>() {
+    <span class="var">count</span>++;  <span class="cm">// value तो बढ़ी, पर UI नहीं बदलेगी!</span>
+  }
+}
+
+<span class="cm">// ✅ यह सही है — UI automatically update होगी</span>
+<span class="kw">class</span> <span class="cls">CorrectExample</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="fn">_CorrectExampleState</span> <span class="fn">createState</span>() => <span class="fn">_CorrectExampleState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_CorrectExampleState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">CorrectExample</span>&gt; {
+  <span class="kw">int</span> <span class="var">count</span> = <span class="num">0</span>;  <span class="cm">// State variable</span>
+  
+  <span class="fn">onPressed</span>() {
+    <span class="fn">setState</span>(() {
+      <span class="var">count</span>++;  <span class="cm">// अब UI automatically update होगी!</span>
+    });
+  }
+}
+    </pre>
+  </div>
+
+  <h1>1.6 State Flow Diagram</h1>
+
+  <div class="diagram">
+    <div class="diagram-title">🔄 State का Flow — कैसे काम करता है?</div>
+    <div class="flow-row">
+      <div class="flow-box green">User Action<br><small>(Button Click)</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box highlight">State Change<br><small>(data बदला)</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box gold">UI Rebuild<br><small>(screen बदली)</small></div>
+    </div>
+    <div class="flow-arrow" style="margin: 15px 0;">↓</div>
+    <div class="flow-row">
+      <div class="flow-box" style="min-width: 500px;">
+        <strong>Complete Cycle:</strong><br>
+        User → Event → State Update → Widget Rebuild → New UI → User
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — State Flow Example</span>
+      <div class="code-dots">
+        <div class="code-dot dot-red"></div>
+        <div class="code-dot dot-yellow"></div>
+        <div class="code-dot dot-green"></div>
+      </div>
+    </div>
+    <pre>
+<span class="cm">// User ने button दबाया → State बदली → UI update हुई</span>
+
+<span class="cm">// Step 1: User clicks "Add to Cart" button</span>
+<span class="cls">ElevatedButton</span>(
+  <span class="var">onPressed</span>: () {
+    <span class="cm">// Step 2: State change होती है</span>
+    <span class="fn">setState</span>(() {
+      <span class="var">cartCount</span>++;
+    });
+  },
+  <span class="var">child</span>: <span class="cls">Text</span>(<span class="str">'Add to Cart'</span>),
+),
+
+<span class="cm">// Step 3: UI automatically rebuild होती है</span>
+<span class="cls">Text</span>(<span class="str">'Cart: $cartCount items'</span>), <span class="cm">// New value show होगी</span>
+    </pre>
+  </div>
+
+  <!-- Chapter 1 Summary -->
+  <div class="summary-box" style="margin-top: 40px;">
+    <div class="summary-title">📝 Chapter 1 — Quick Revision</div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>State</strong> = App की "याददाश्त" — वह data जो screen को control करता है</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>State Management</strong> = State को properly store, update और access करने की प्रक्रिया</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>State बदलने पर <strong>UI automatically rebuild</strong> होती है</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>Normal variable reactive नहीं होता, <strong>State reactive</strong> होती है</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>State Management से code clean, maintainable और bug-free रहता है</p></div>
+  </div>
+
+  <!-- Chapter 1 Exercises -->
+  <div class="exercise-box">
+    <div class="exercise-title">🏋️ Practice Exercises</div>
+    <div class="exercise-item">
+      <div class="exercise-num">1</div>
+      <p>एक simple Flutter app बनाओ जो एक counter दिखाए और button press पर count बढ़े।</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">2</div>
+      <p>अपनी daily life में 10 चीज़ें ढूंढो जिनकी "State" होती है (जैसे fan speed, TV volume, etc.)</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">3</div>
+      <p>StatelessWidget और StatefulWidget में क्या फर्क है? एक example से समझाओ।</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">4</div>
+      <p>बिना setState() के एक variable बदलो — क्या UI update होती है? Observe करो।</p>
+    </div>
+  </div>
+
+  <!-- Interview Q&A for Chapter 1 -->
+  <h2>💼 Interview Questions — Chapter 1</h2>
+  <div class="qa-section">
+    <div class="qa-item">
+      <div class="qa-question">
+        <div class="qa-q-num">Q1</div>
+        <span>Flutter में State क्या होती है? Simple words में explain करो।</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Answer:</strong> State वह data है जो app में किसी time पर exist करता है और जिसके बदलने पर UI automatically update होती है। जैसे — counter की value, login status, cart में items की संख्या — ये सब State हैं।
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-question">
+        <div class="qa-q-num">Q2</div>
+        <span>State Management क्यों important है? बिना इसके क्या problem होती है?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Answer:</strong> State Management important है क्योंकि:<br>
+        1. Data consistency — एक जगह update हो तो सब जगह reflect हो<br>
+        2. UI synchronization — State बदले तो screen automatically update हो<br>
+        3. Code maintainability — बड़े apps में code organized रहे<br><br>
+        बिना State Management के: data inconsistency, UI bugs, messy code जैसी problems होती हैं।
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-question">
+        <div class="qa-q-num">Q3</div>
+        <span>StatefulWidget और StatelessWidget में क्या फर्क है?</span>
+      </div>
+      <div class="qa-answer">
+        <strong>Answer:</strong><br>
+        <strong>StatelessWidget:</strong> जिसकी State नहीं होती — यह एक बार बना और fixed रहा। जैसे — एक static text या image।<br>
+        <strong>StatefulWidget:</strong> जिसकी State होती है — यह data बदलने पर rebuild होता है। जैसे — counter, form, animation।
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 2 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 02</div>
+    <div class="chapter-title">State के प्रकार (Types of State)</div>
+    <div class="chapter-desc">State कई तरह की होती है। इस chapter में हम समझेंगे — Local, Global, Shared, UI, App, Server, Persistent और Temporary State क्या होती हैं।</div>
+  </div>
+
+  <div class="info-box">
+    <div class="info-box-title">💡 यह Chapter क्यों जरूरी है?</div>
+    <p>अलग-अलग तरह की State को अलग-अलग तरीके से manage करना पड़ता है। जब आप जान जाएंगे कि आपकी State किस type की है, तो आप सही State Management solution चुन पाएंगे।</p>
+  </div>
+
+  <h1>2.1 Local State (स्थानीय State)</h1>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example:</strong> एक drawer के अंदर रखी चीज़ें। सिर्फ उस कमरे वाले को पता है — बाकी घर को नहीं।</p>
+  </div>
+
+  <p><strong>Local State</strong> वह State है जो <strong>सिर्फ एक Widget तक limited</strong> होती है। दूसरे widgets को इसकी जरूरत नहीं होती।</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Local State Example</span>
+      <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+    </div>
+    <pre>
+<span class="kw">class</span> <span class="cls">ExpandableCard</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="fn">_ExpandableCardState</span> <span class="fn">createState</span>() => <span class="fn">_ExpandableCardState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_ExpandableCardState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">ExpandableCard</span>&gt; {
+  <span class="cm">// यह Local State है — सिर्फ इस widget को पता है</span>
+  <span class="kw">bool</span> <span class="var">isExpanded</span> = <span class="kw">false</span>;
+  
+  <span class="fn">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="cls">GestureDetector</span>(
+      <span class="var">onTap</span>: () => <span class="fn">setState</span>(() => <span class="var">isExpanded</span> = !<span class="var">isExpanded</span>),
+      <span class="var">child</span>: <span class="cls">Column</span>(
+        <span class="var">children</span>: [
+          <span class="cls">Text</span>(<span class="str">'Card Title'</span>),
+          <span class="kw">if</span> (<span class="var">isExpanded</span>) <span class="cls">Text</span>(<span class="str">'Card Content...'</span>),
+        ],
+      ),
+    );
+  }
+}
+    </pre>
+  </div>
+
+  <h1>2.2 Global State (वैश्विक State)</h1>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example:</strong> देश की temperature — पूरे देश को affect करती है।</p>
+  </div>
+
+  <p><strong>Global State</strong> वह State है जो <strong>पूरे app में accessible</strong> होती है। कोई भी widget इसे पढ़ और update कर सकता है।</p>
+
+  <p><strong>Examples:</strong></p>
+  <ul>
+    <li>User authentication status (logged in / logged out)</li>
+    <li>App theme (dark/light mode)</li>
+    <li>User language preference</li>
+    <li>Shopping cart data</li>
+  </ul>
+
+  <h1>2.3 Shared State (साझा State)</h1>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example:</strong> एक family का shared bank account — कोई भी member debit/credit कर सकता है।</p>
+  </div>
+
+  <p><strong>Shared State</strong> वह State है जो <strong>कई widgets के बीच share</strong> होती है — लेकिन जरूरी नहीं कि पूरे app में हो।</p>
+
+  <h1>2.4 UI State</h1>
+  <p>UI से related State — जैसे:</p>
+  <ul>
+    <li>Dialog open है या नहीं</li>
+    <li>Tab selection</li>
+    <li>Scroll position</li>
+    <li>Animation state</li>
+    <li>Form validation errors</li>
+  </ul>
+
+  <h1>2.5 App State</h1>
+  <p>पूरे app की State जो multiple screens पर share होती है:</p>
+  <ul>
+    <li>User profile data</li>
+    <li>App settings</li>
+    <li>Notification count</li>
+    <li>Online/offline status</li>
+  </ul>
+
+  <h1>2.6 Server State</h1>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example:</strong> Weather app में temperature — data server से आता है और बदलता रहता है।</p>
+  </div>
+
+  <p>Server से आने वाला data जो:</p>
+  <ul>
+    <li>Asynchronous (time लेता है)</li>
+    <li>Cache में store हो सकता है</li>
+    <li>Loading, Success, Error states होती हैं</li>
+    <li>Background में refresh होता है</li>
+  </ul>
+
+  <h1>2.7 Persistent State</h1>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example:</strong> Phone का WiFi password — app close होने पर भी याद रहता है।</p>
+  </div>
+
+  <p>App close होने के बाद भी store रहने वाली State:</p>
+  <ul>
+    <li>User preferences (SharedPreferences)</li>
+    <li>Login token (Secure Storage)</li>
+    <li>Offline data (SQLite/Hive)</li>
+    <li>App settings</li>
+  </ul>
+
+  <h1>2.8 Temporary State</h1>
+  <p>Short time के लिए exist करने वाली State:</p>
+  <ul>
+    <li>Form input values</li>
+    <li>Dropdown selections</li>
+    <li>Search query text</li>
+    <li>Timer countdown</li>
+  </ul>
+
+  <h1>2.9 Complete Comparison Table</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>State Type</th>
+        <th>Scope</th>
+        <th>Persistent?</th>
+        <th>Management</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Local State</strong></td>
+        <td>एक Widget</td>
+        <td>❌ नहीं</td>
+        <td>setState()</td>
+        <td>Dropdown open/close</td>
+      </tr>
+      <tr>
+        <td><strong>Global State</strong></td>
+        <td>पूरा App</td>
+        <td>🔄 हो सकता है</td>
+        <td>Provider/Bloc/GetX</td>
+        <td>Login Status</td>
+      </tr>
+      <tr>
+        <td><strong>Shared State</strong></td>
+        <td>कुछ Widgets</td>
+        <td>❌ नहीं</td>
+        <td>Provider/InheritedWidget</td>
+        <td>Shopping Cart</td>
+      </tr>
+      <tr>
+        <td><strong>UI State</strong></td>
+        <td>UI Components</td>
+        <td>❌ नहीं</td>
+        <td>setState()</td>
+        <td>Tab selection</td>
+      </tr>
+      <tr>
+        <td><strong>App State</strong></td>
+        <td>पूरा App</td>
+        <td>🔄 हो सकता है</td>
+        <td>Provider/Riverpod/Bloc</td>
+        <td>User Profile</td>
+      </tr>
+      <tr>
+        <td><strong>Server State</strong></td>
+        <td>पूरा App</td>
+        <td>Cache में</td>
+        <td>FutureProvider/Bloc</td>
+        <td>API Data</td>
+      </tr>
+      <tr>
+        <td><strong>Persistent State</strong></td>
+        <td>App restart के बाद भी</td>
+        <td>✅ हाँ</td>
+        <td>SharedPreferences/Hive</td>
+        <td>Dark Mode Setting</td>
+      </tr>
+      <tr>
+        <td><strong>Temporary State</strong></td>
+        <td>Session तक</td>
+        <td>❌ नहीं</td>
+        <td>setState()</td>
+        <td>Form Input</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1>2.10 State Types का Diagram</h1>
+
+  <div class="diagram">
+    <div class="diagram-title">🗂️ State Types — Visual Overview</div>
+    <div class="mind-row">
+      <div class="mind-node green">Local State<br><small>1 Widget</small></div>
+      <div class="mind-node blue">Shared State<br><small>कुछ Widgets</small></div>
+      <div class="mind-node red">Global State<br><small>पूरा App</small></div>
+    </div>
+    <div style="margin: 20px 0; font-size: 24px; color: #ccc;">⬇</div>
+    <div class="mind-row">
+      <div class="mind-node purple">UI State<br><small>Screen पर</small></div>
+      <div class="mind-node gold">App State<br><small>Business Logic</small></div>
+      <div class="mind-node teal">Server State<br><small>API से</small></div>
+    </div>
+    <div style="margin: 20px 0; font-size: 24px; color: #ccc;">⬇</div>
+    <div class="mind-row">
+      <div class="mind-node orange">Persistent State<br><small>Storage में</small></div>
+      <div class="mind-node red">Temporary State<br><small>Session में</small></div>
+    </div>
+  </div>
+
+  <!-- Chapter 2 Summary -->
+  <div class="summary-box">
+    <div class="summary-title">📝 Chapter 2 — Quick Revision</div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>Local State:</strong> सिर्फ एक widget में — setState() से manage करो</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>Global State:</strong> पूरे app में — Provider, Bloc, GetX से manage करो</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>Server State:</strong> API data — Loading/Success/Error states</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>Persistent State:</strong> App restart के बाद भी रहती है — Storage में save होती है</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>सही State type पहचानना सही State Management solution चुनने में help करता है</p></div>
+  </div>
+
+  <!-- Exercises -->
+  <div class="exercise-box">
+    <div class="exercise-title">🏋️ Practice Exercises</div>
+    <div class="exercise-item">
+      <div class="exercise-num">1</div>
+      <p>Instagram app की 5 अलग-अलग States identify करो और उनका type बताओ।</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">2</div>
+      <p>एक E-commerce app में कौन-कौन सी States होंगी? List बनाओ और type classify करो।</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">3</div>
+      <p>Persistent State के लिए SharedPreferences use करके dark mode setting save करो।</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 3 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 03</div>
+    <div class="chapter-title">State का जीवनचक्र (State Lifecycle)</div>
+    <div class="chapter-desc">State कैसे बनती है, कैसे पढ़ी जाती है, कैसे update होती है, और कैसे delete होती है — complete lifecycle समझेंगे।</div>
+  </div>
+
+  <div class="real-life-box">
+    <p><strong>Real-life Example — एक order की life:</strong><br>
+    Order placed → Order confirmed → Order shipped → Order delivered → Order completed<br>
+    यही concept State के lifecycle पर apply होता है!</p>
+  </div>
+
+  <h1>3.1 State का पूरा Lifecycle</h1>
+
+  <div class="diagram">
+    <div class="diagram-title">🔄 Complete State Lifecycle</div>
+    <div class="flow-row">
+      <div class="flow-box green">1. CREATE<br><small>State बनाना</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box" style="border-color: var(--blue); color: var(--blue);">2. READ<br><small>State पढ़ना</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box gold">3. UPDATE<br><small>State बदलना</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box highlight">4. DELETE<br><small>State हटाना</small></div>
+    </div>
+    <div style="margin: 20px 0; font-size: 18px; color: var(--accent);">
+      यह cycle चलती रहती है → जब State बदलती है → UI Rebuild होती है
+    </div>
+  </div>
+
+  <h1>3.2 Flutter Widget Lifecycle</h1>
+
+  <div class="info-box">
+    <div class="info-box-title">📌 Flutter में State का Widget Lifecycle</div>
+    <p>Flutter में StatefulWidget के साथ State का lifecycle कुछ important methods से जुड़ा है।</p>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-title">Flutter StatefulWidget Lifecycle</div>
+    <div style="text-align: left; max-width: 500px; margin: 0 auto;">
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box green" style="min-width:200px;">createState()</div>
+        <span>→ Widget create होता है</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box" style="min-width:200px; border-color:var(--blue); color:var(--blue);">initState()</div>
+        <span>→ State initialize होती है</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box" style="min-width:200px; border-color:var(--purple); color:var(--purple);">didChangeDependencies()</div>
+        <span>→ Dependencies बदलती हैं</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box gold" style="min-width:200px;">build()</div>
+        <span>→ UI render होती है</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box" style="min-width:200px; border-color:var(--orange); color:var(--orange);">setState() → rebuild()</div>
+        <span>→ State बदली → UI update</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box" style="min-width:200px; border-color:var(--teal); color:var(--teal);">deactivate()</div>
+        <span>→ Widget temporarily हटाया</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px; margin:10px 0;">
+        <div class="flow-box highlight" style="min-width:200px;">dispose()</div>
+        <span>→ Widget permanently destroy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Complete Widget Lifecycle</span>
+      <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+    </div>
+    <pre>
+<span class="kw">class</span> <span class="cls">MyWidget</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="fn">_MyWidgetState</span> <span class="fn">createState</span>() => <span class="fn">_MyWidgetState</span>(); <span class="cm">// Step 1</span>
+}
+
+<span class="kw">class</span> <span class="cls">_MyWidgetState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">MyWidget</span>&gt; {
+  <span class="kw">int</span> <span class="var">count</span> = <span class="num">0</span>;
+  
+  <span class="cm">// Step 2: Widget screen पर पहली बार आने पर</span>
+  <span class="op">@override</span>
+  <span class="kw">void</span> <span class="fn">initState</span>() {
+    <span class="kw">super</span>.<span class="fn">initState</span>();
+    <span class="fn">print</span>(<span class="str">'Widget created! यहाँ API calls या initialization करो'</span>);
+    <span class="cm">// यहाँ: API call, timer start, listener setup</span>
+  }
+  
+  <span class="cm">// Step 3: हर बार UI build होती है</span>
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="fn">print</span>(<span class="str">'Build हुई! count = $count'</span>);
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      <span class="var">body</span>: <span class="cls">Center</span>(
+        <span class="var">child</span>: <span class="cls">Column</span>(
+          <span class="var">children</span>: [
+            <span class="cls">Text</span>(<span class="str">'Count: $count'</span>),  <span class="cm">// State READ</span>
+            <span class="cls">ElevatedButton</span>(
+              <span class="cm">// State UPDATE</span>
+              <span class="var">onPressed</span>: () => <span class="fn">setState</span>(() => <span class="var">count</span>++),
+              <span class="var">child</span>: <span class="cls">Text</span>(<span class="str">'Increment'</span>),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  <span class="cm">// Step 4: Widget screen से हटने पर — cleanup करो</span>
+  <span class="op">@override</span>
+  <span class="kw">void</span> <span class="fn">dispose</span>() {
+    <span class="fn">print</span>(<span class="str">'Widget destroy! Cleanup करो'</span>);
+    <span class="cm">// यहाँ: timer cancel, stream close, controller dispose</span>
+    <span class="kw">super</span>.<span class="fn">dispose</span>();
+  }
+}
+    </pre>
+  </div>
+
+  <h1>3.3 State CREATE करना</h1>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — State Creation</span>
+      <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+    </div>
+    <pre>
+<span class="cm">// तरीका 1: Direct initialization</span>
+<span class="kw">int</span> <span class="var">count</span> = <span class="num">0</span>;
+<span class="cls">String</span> <span class="var">name</span> = <span class="str">''</span>;
+<span class="kw">bool</span> <span class="var">isLoading</span> = <span class="kw">false</span>;
+
+<span class="cm">// तरीका 2: initState() में</span>
+<span class="op">@override</span>
+<span class="kw">void</span> <span class="fn">initState</span>() {
+  <span class="kw">super</span>.<span class="fn">initState</span>();
+  <span class="var">count</span> = <span class="var">widget</span>.<span class="var">initialCount</span>;  <span class="cm">// parent से initial value</span>
+  <span class="fn">loadData</span>();  <span class="cm">// API से data load करो</span>
+}
+    </pre>
+  </div>
+
+  <h1>3.4 State READ करना</h1>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — State Reading</span>
+      <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+    </div>
+    <pre>
+<span class="cm">// build() method में State read होती है</span>
+<span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+  <span class="kw">return</span> <span class="cls">Column</span>(
+    <span class="var">children</span>: [
+      <span class="cls">Text</span>(<span class="str">'Count: $count'</span>),        <span class="cm">// int state read</span>
+      <span class="cls">Text</span>(<span class="str">'Name: $name'</span>),           <span class="cm">// String state read</span>
+      <span class="kw">if</span> (<span class="var">isLoading</span>) <span class="cls">CircularProgressIndicator</span>(),  <span class="cm">// bool state read</span>
+    ],
+  );
+}
+    </pre>
+  </div>
+
+  <h1>3.5 State UPDATE करना</h1>
+
+  <div class="warning-box">
+    <div class="warning-box-title">⚠️ Important Rule:</div>
+    <p>State को <strong>हमेशा setState() के अंदर</strong> update करो, नहीं तो UI update नहीं होगी!</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — State Update</span>
+      <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+    </div>
+    <pre>
+<span class="cm">// ❌ गलत तरीका — UI update नहीं होगी</span>
+<span class="var">count</span>++;  <span class="cm">// setState के बाहर</span>
+
+<span class="cm">// ✅ सही तरीका — UI automatically update होगी</span>
+<span class="fn">setState</span>(() {
+  <span class="var">count</span>++;
+  <span class="var">name</span> = <span class="str">'Flutter Developer'</span>;
+  <span class="var">isLoading</span> = <span class="kw">false</span>;
+});
+    </pre>
+  </div>
+
+  <h1>3.6 State DELETE करना (dispose)</h1>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — State Cleanup (dispose)</span>
+      <div class="code-dots"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div></div>
+    </div>
+    <pre>
+<span class="kw">class</span> <span class="cls">_MyState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">MyWidget</span>&gt; {
+  <span class="cls">TextEditingController</span> <span class="var">_controller</span> = <span class="cls">TextEditingController</span>();
+  <span class="cls">Timer</span>? <span class="var">_timer</span>;
+  <span class="cls">StreamSubscription</span>? <span class="var">_subscription</span>;
+  
+  <span class="op">@override</span>
+  <span class="kw">void</span> <span class="fn">initState</span>() {
+    <span class="kw">super</span>.<span class="fn">initState</span>();
+    <span class="var">_timer</span> = <span class="cls">Timer</span>.<span class="fn">periodic</span>(<span class="cls">Duration</span>(<span class="var">seconds</span>: <span class="num">1</span>), (_) => <span class="fn">doSomething</span>());
+  }
+  
+  <span class="op">@override</span>
+  <span class="kw">void</span> <span class="fn">dispose</span>() {
+    <span class="cm">// Memory leak से बचने के लिए cleanup जरूरी है!</span>
+    <span class="var">_controller</span>.<span class="fn">dispose</span>();  <span class="cm">// TextController cleanup</span>
+    <span class="var">_timer</span>?.<span class="fn">cancel</span>();        <span class="cm">// Timer cancel</span>
+    <span class="var">_subscription</span>?.<span class="fn">cancel</span>(); <span class="cm">// Stream close</span>
+    <span class="kw">super</span>.<span class="fn">dispose</span>();
+  }
+}
+    </pre>
+  </div>
+
+  <h1>3.7 UI Rebuild Process</h1>
+
+  <div class="diagram">
+    <div class="diagram-title">🔄 UI Rebuild — कब और कैसे?</div>
+    <div class="flow-row">
+      <div style="text-align:left; max-width:600px;">
+        <div style="display:flex; gap:15px; align-items:center; margin:12px 0;">
+          <div class="flow-box highlight" style="min-width:150px;">setState() call</div>
+          <span>→ Flutter को पता चलता है State बदली</span>
+        </div>
+        <div style="display:flex; gap:15px; align-items:center; margin:12px 0;">
+          <div class="flow-box gold" style="min-width:150px;">Mark Dirty</div>
+          <span>→ Widget को "dirty" mark किया जाता है</span>
+        </div>
+        <div style="display:flex; gap:15px; align-items:center; margin:12px 0;">
+          <div class="flow-box green" style="min-width:150px;">build() call</div>
+          <span>→ Widget tree rebuild होती है</span>
+        </div>
+        <div style="display:flex; gap:15px; align-items:center; margin:12px 0;">
+          <div class="flow-box" style="min-width:150px; border-color:var(--teal); color:var(--teal);">Reconcile</div>
+          <span>→ नई और पुरानी tree compare होती है</span>
+        </div>
+        <div style="display:flex; gap:15px; align-items:center; margin:12px 0;">
+          <div class="flow-box" style="min-width:150px; border-color:var(--blue); color:var(--blue);">Render</div>
+          <span>→ सिर्फ changed parts render होते हैं</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <div class="tip-box-title">💜 Pro Tip: Flutter Smart है!</div>
+    <p>Flutter पूरी screen दोबारा नहीं बनाता — सिर्फ वही हिस्सा rebuild करता है जिसकी State बदली है। इसीलिए Flutter इतना fast है!</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-box">
+    <div class="summary-title">📝 Chapter 3 — Quick Revision</div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>initState():</strong> Widget पहली बार बनने पर — initialization के लिए</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>build():</strong> हर बार State बदलने पर call होता है</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>setState():</strong> State update करने का सही तरीका</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p><strong>dispose():</strong> Widget destroy होने पर cleanup जरूरी है</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>Flutter सिर्फ changed widgets rebuild करता है — पूरी screen नहीं</p></div>
+  </div>
+
+  <div class="exercise-box">
+    <div class="exercise-title">🏋️ Practice Exercises</div>
+    <div class="exercise-item">
+      <div class="exercise-num">1</div>
+      <p>हर lifecycle method में print() statement add करो और observe करो कि कब-कब call होते हैं।</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">2</div>
+      <p>एक Timer बनाओ जो हर second count बढ़ाए, और dispose() में उसे cancel करो।</p>
+    </div>
+    <div class="exercise-item">
+      <div class="exercise-num">3</div>
+      <p>setState() के बाहर variable बदलो — क्या UI update होती है? क्यों नहीं?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 4 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 04</div>
+    <div class="chapter-title">State Management के बिना समस्याएं (Problems Without State Management)</div>
+    <div class="chapter-desc">जब हम State Management tools का उपयोग नहीं करते हैं, तब हमें Prop Drilling, Data Synchronization, अनावश्यक Re-rendering और Maintainability जैसी समस्याओं का सामना करना पड़ता है।</div>
+  </div>
+
+  <h1>4.1 Prop Drilling (प्रॉप ड्रिलिंग)</h1>
+  <div class="real-life-box">
+    <p><strong>Real-life Example — पानी की पाइपलाइन:</strong></p>
+    <p>मान लीजिए कि एक बहुमंजिला इमारत (Multi-story building) में 5वीं मंजिल पर पानी पहुंचाना है। आपके पास कोई केंद्रीय टंकी (Central Tank) या पंप नहीं है। आप पहली मंजिल के फ्लैट से पाइप जोड़कर दूसरी मंजिल, फिर तीसरी मंजिल, चौथी मंजिल और अंत में 5वीं मंजिल पर पानी पहुँचाते हैं। 2, 3, और 4 मंजिल के लोगों को पानी की आवश्यकता नहीं है, लेकिन उनके घर से पाइप गुजर रही है। यही <strong>Prop Drilling</strong> है!</p>
+  </div>
+
+  <div class="definition-box">
+    <p><strong>Prop Drilling:</strong> जब किसी deep-nested child widget को parent widget से कोई data चाहिए होता है, तो हमें उस data को बीच के सभी widgets (intermediate widgets) के माध्यम से pass करना पड़ता है, भले ही उन intermediate widgets को उस data से कोई लेना-देना न हो।</p>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-title">🔄 Prop Drilling vs Centralized State</div>
+    <div class="flow-row">
+      <div class="flow-box green">Parent Widget (Data: User)</div>
+    </div>
+    <div class="flow-arrow">↓ (drilling user)</div>
+    <div class="flow-box">Middle Widget A (No use of user)</div>
+    <div class="flow-arrow">↓ (drilling user)</div>
+    <div class="flow-box">Middle Widget B (No use of user)</div>
+    <div class="flow-arrow">↓ (drilling user)</div>
+    <div class="flow-box highlight">Deep Child Widget (Uses User Data)</div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Prop Drilling Problem</span>
+    </div>
+    <pre>
+<span class="kw">class</span> <span class="cls">ParentWidget</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cls">String</span> <span class="var">username</span> = <span class="str">"Amit"</span>;
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="fn">MiddleWidgetA</span>(<span class="var">username</span>: <span class="var">username</span>); <span class="cm">// Passing down</span>
+  }
+}
+
+<span class="kw">class</span> <span class="cls">MiddleWidgetA</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cls">String</span> <span class="var">username</span>;
+  <span class="fn">MiddleWidgetA</span>({<span class="kw">required</span> <span class="kw">this</span>.<span class="var">username</span>});
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="fn">MiddleWidgetB</span>(<span class="var">username</span>: <span class="var">username</span>); <span class="cm">// Passing down again</span>
+  }
+}
+
+<span class="kw">class</span> <span class="cls">MiddleWidgetB</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cls">String</span> <span class="var">username</span>;
+  <span class="fn">MiddleWidgetB</span>({<span class="kw">required</span> <span class="kw">this</span>.<span class="var">username</span>});
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="fn">DeepChildWidget</span>(<span class="var">username</span>: <span class="var">username</span>); <span class="cm">// Finally reaching destination</span>
+  }
+}
+
+<span class="kw">class</span> <span class="cls">DeepChildWidget</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cls">String</span> <span class="var">username</span>;
+  <span class="fn">DeepChildWidget</span>({<span class="kw">required</span> <span class="kw">this</span>.<span class="var">username</span>});
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">"Hello, $username"</span>);
+  }
+}
+    </pre>
+  </div>
+
+  <h1>4.2 Data Synchronization (डेटा सिंक्रनाइज़ेशन)</h1>
+  <p>जब एक ही data को app में अलग-अलग जगहों (screens) पर दिखाया जा रहा हो, तो यदि एक जगह data बदलता है, तो दूसरी जगह भी उसे update होना चाहिए। बिना State Management के, आपको हर screen को manual updates भेजने होंगे, जिससे data outdated रह जाता है।</p>
+
+  <h1>4.3 Re-rendering Issues (अनावश्यक री-रेंडरिंग)</h1>
+  <p>जब आप parent widget में <code>setState()</code> का उपयोग करते हैं, तो वह parent widget और उसके अंतर्गत आने वाले <strong>सभी child widgets</strong> फिर से build (rebuild) हो जाते हैं, भले ही उनका data बदला हो या नहीं। यह app की performance को धीमा कर देता है।</p>
+
+  <!-- Summary -->
+  <div class="summary-box">
+    <div class="summary-title">📝 Chapter 4 — Quick Revision</div>
+    <div class="summary-point"><div class="summary-dot"></div><p>Prop Drilling से code गंदा और जटिल हो जाता है।</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>बिना State Management के, data को sync रखना बहुत कठिन होता है।</p></div>
+    <div class="summary-point"><div class="summary-dot"></div><p>अनावश्यक rebuilds से app की performance प्रभावित होती है।</p></div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 5 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 05</div>
+    <div class="chapter-title">Basic State Management (setState और Stateful Widget)</div>
+    <div class="chapter-desc">Flutter में inbuilt बुनियादी State Management: Stateful Widget और setState() का उपयोग कर Counter और Todo Application बनाना।</div>
+  </div>
+
+  <h1>5.1 Counter Application Example</h1>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Counter App</span>
+    </div>
+    <pre>
+<span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
+
+<span class="kw">void</span> <span class="fn">main</span>() => <span class="fn">runApp</span>(<span class="cls">MaterialApp</span>(<span class="var">home</span>: <span class="cls">CounterScreen</span>()));
+
+<span class="kw">class</span> <span class="cls">CounterScreen</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="op">@override</span>
+  <span class="fn">_CounterScreenState</span> <span class="fn">createState</span>() => <span class="fn">_CounterScreenState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_CounterScreenState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">CounterScreen</span>&gt; {
+  <span class="kw">int</span> <span class="var">_counter</span> = <span class="num">0</span>;
+
+  <span class="kw">void</span> <span class="fn">_incrementCounter</span>() {
+    <span class="fn">setState</span>(() {
+      <span class="var">_counter</span>++;
+    });
+  }
+
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      <span class="var">appBar</span>: <span class="cls">AppBar</span>(<span class="var">title</span>: <span class="cls">Text</span>(<span class="str">'Simple Counter App'</span>)),
+      <span class="var">body</span>: <span class="cls">Center</span>(
+        <span class="var">child</span>: <span class="cls">Text</span>(
+          <span class="str">'Count: $_counter'</span>,
+          <span class="var">style</span>: <span class="cls">TextStyle</span>(<span class="var">fontSize</span>: <span class="num">24</span>),
+        ),
+      ),
+      <span class="var">floatingActionButton</span>: <span class="cls">FloatingActionButton</span>(
+        <span class="var">onPressed</span>: <span class="var">_incrementCounter</span>,
+        <span class="var">child</span>: <span class="cls">Icon</span>(<span class="cls">Icons</span>.<span class="var">add</span>),
+      ),
+    );
+  }
+}
+    </pre>
+  </div>
+
+  <h1>5.2 Todo Application Example</h1>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Basic Todo App</span>
+    </div>
+    <pre>
+<span class="kw">class</span> <span class="cls">TodoApp</span> <span class="kw">extends</span> <span class="cls">StatefulWidget</span> {
+  <span class="op">@override</span>
+  <span class="fn">_TodoAppState</span> <span class="fn">createState</span>() => <span class="fn">_TodoAppState</span>();
+}
+
+<span class="kw">class</span> <span class="cls">_TodoAppState</span> <span class="kw">extends</span> <span class="cls">State</span>&lt;<span class="cls">TodoApp</span>&gt; {
+  <span class="kw">final</span> <span class="cls">List</span>&lt;<span class="cls">String</span>&gt; <span class="var">_todos</span> = [];
+  <span class="kw">final</span> <span class="cls">TextEditingController</span> <span class="var">_controller</span> = <span class="cls">TextEditingController</span>();
+
+  <span class="kw">void</span> <span class="fn">_addTodo</span>() {
+    <span class="kw">if</span> (<span class="var">_controller</span>.<span class="var">text</span>.<span class="var">isNotEmpty</span>) {
+      <span class="fn">setState</span>(() {
+        <span class="var">_todos</span>.<span class="fn">add</span>(<span class="var">_controller</span>.<span class="var">text</span>);
+        <span class="var">_controller</span>.<span class="fn">clear</span>();
+      });
+    }
+  }
+
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="cls">Scaffold</span>(
+      <span class="var">appBar</span>: <span class="cls">AppBar</span>(<span class="var">title</span>: <span class="cls">Text</span>(<span class="str">'My Todo App'</span>)),
+      <span class="var">body</span>: <span class="cls">Column</span>(
+        <span class="var">children</span>: [
+          <span class="cls">Padding</span>(
+            <span class="var">padding</span>: <span class="kw">const</span> <span class="cls">EdgeInsets</span>.<span class="fn">all</span>(<span class="num">8.0</span>),
+            <span class="var">child</span>: <span class="cls">Row</span>(
+              <span class="var">children</span>: [
+                <span class="cls">Expanded</span>(
+                  <span class="var">child</span>: <span class="cls">TextField</span>(
+                    <span class="var">controller</span>: <span class="var">_controller</span>,
+                    <span class="var">decoration</span>: <span class="cls">InputDecoration</span>(<span class="var">labelText</span>: <span class="str">'Add Task'</span>),
+                  ),
+                ),
+                <span class="cls">IconButton</span>(<span class="var">icon</span>: <span class="cls">Icon</span>(<span class="cls">Icons</span>.<span class="var">add</span>), <span class="var">onPressed</span>: <span class="var">_addTodo</span>),
+              ],
+            ),
+          ),
+          <span class="cls">Expanded</span>(
+            <span class="var">child</span>: <span class="cls">ListView</span>.<span class="fn">builder</span>(
+              <span class="var">itemCount</span>: <span class="var">_todos</span>.<span class="var">length</span>,
+              <span class="var">itemBuilder</span>: (<span class="var">context</span>, <span class="var">index</span>) {
+                <span class="kw">return</span> <span class="cls">ListTile</span>(
+                  <span class="var">title</span>: <span class="cls">Text</span>(<span class="var">_todos</span>[<span class="var">index</span>]),
+                  <span class="var">trailing</span>: <span class="cls">IconButton</span>(
+                    <span class="var">icon</span>: <span class="cls">Icon</span>(<span class="cls">Icons</span>.<span class="var">delete</span>),
+                    <span class="var">onPressed</span>: () {
+                      <span class="fn">setState</span>(() {
+                        <span class="var">_todos</span>.<span class="fn">removeAt</span>(<span class="var">index</span>);
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 6 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 06</div>
+    <div class="chapter-title">डेटा प्रवाह की अवधारणाएँ (Data Flow Concepts)</div>
+    <div class="chapter-desc">Parent to Child, Child to Parent, Sibling Communication और One-way vs Two-way Data Flow की अवधारणाएँ।</div>
+  </div>
+
+  <h1>6.1 Parent to Child Data Flow</h1>
+  <p>Parent widget से Child widget में data भेजने के लिए हम Child class के Constructor का उपयोग करते हैं।</p>
+
+  <h1>6.2 Child to Parent Data Flow</h1>
+  <p>जब Child widget से Parent widget को सूचित करना होता है, तो Parent widget एक callback function (जैसे <code>VoidCallback</code> या <code>ValueChanged</code>) Child widget को देता है, जिसे Child call करता है।</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Callback Pattern</span>
+    </div>
+    <pre>
+<span class="cm">// Child Widget</span>
+<span class="kw">class</span> <span class="cls">ChildButton</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="kw">final</span> <span class="cls">VoidCallback</span> <span class="var">onTapTriggered</span>;
+  <span class="fn">ChildButton</span>({<span class="kw">required</span> <span class="kw">this</span>.<span class="var">onTapTriggered</span>});
+
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="cls">ElevatedButton</span>(
+      <span class="var">onPressed</span>: <span class="var">onTapTriggered</span>,
+      <span class="var">child</span>: <span class="cls">Text</span>(<span class="str">"Click Me"</span>),
+    );
+  }
+}
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 7 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 07</div>
+    <div class="chapter-title">InheritedWidget</div>
+    <div class="chapter-desc">Flutter का internal Low-Level State sharing mechanism. InheritedWidget कैसे काम करता है और इसके क्या फायदे और सीमाएं हैं।</div>
+  </div>
+
+  <h1>7.1 Concept & Architecture</h1>
+  <p>InheritedWidget Flutter tree में data को नीचे की ओर propagate (प्रसारित) करने की सुविधा देता है ताकि किसी भी child widget को manual constructors के बिना framework के context.dependOnInheritedWidgetOfExactType के माध्यम से data मिल सके।</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — InheritedWidget Example</span>
+    </div>
+    <pre>
+<span class="kw">class</span> <span class="cls">SharedData</span> <span class="kw">extends</span> <span class="cls">InheritedWidget</span> {
+  <span class="kw">final</span> <span class="kw">int</span> <span class="var">data</span>;
+  <span class="fn">SharedData</span>({<span class="kw">required</span> <span class="kw">this</span>.<span class="var">data</span>, <span class="kw">required</span> <span class="cls">Widget</span> <span class="var">child</span>}) : <span class="kw">super</span>(<span class="var">child</span>: <span class="var">child</span>);
+
+  <span class="kw">static</span> <span class="cls">SharedData</span>? <span class="fn">of</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="var">context</span>.<span class="fn">dependOnInheritedWidgetOfExactType</span>&lt;<span class="cls">SharedData</span>&gt;();
+  }
+
+  <span class="op">@override</span>
+  <span class="kw">bool</span> <span class="fn">updateShouldNotify</span>(<span class="cls">SharedData</span> <span class="var">oldWidget</span>) {
+    <span class="kw">return</span> <span class="var">oldWidget</span>.<span class="var">data</span> != <span class="var">data</span>;
+  }
+}
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 8 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 08</div>
+    <div class="chapter-title">Provider State Management</div>
+    <div class="chapter-desc">Provider package का उपयोग करके ChangeNotifier, Consumer और MultiProvider की मदद से state को clean तरीके से manage करना।</div>
+  </div>
+
+  <h1>8.1 ChangeNotifier & Consumer</h1>
+  <p>ChangeNotifier एक Flutter-native class है जो listeners को notify करती है। Provider इसके ऊपर wrapper की तरह काम करता है।</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Provider Counter App</span>
+    </div>
+    <pre>
+<span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:provider/provider.dart'</span>;
+
+<span class="kw">class</span> <span class="cls">CounterProvider</span> <span class="kw">with</span> <span class="cls">ChangeNotifier</span> {
+  <span class="kw">int</span> <span class="var">_count</span> = <span class="num">0</span>;
+  <span class="kw">int</span> <span class="kw">get</span> <span class="var">count</span> => <span class="var">_count</span>;
+
+  <span class="kw">void</span> <span class="fn">increment</span>() {
+    <span class="var">_count</span>++;
+    <span class="fn">notifyListeners</span>();
+  }
+}
+
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="fn">runApp</span>(
+    <span class="cls">ChangeNotifierProvider</span>(
+      <span class="var">create</span>: (<span class="var">context</span>) => <span class="cls">CounterProvider</span>(),
+      <span class="var">child</span>: <span class="cls">MyApp</span>(),
+    ),
+  );
+}
+
+<span class="kw">class</span> <span class="cls">MyApp</span> <span class="kw">extends</span> <span class="cls">StatelessWidget</span> {
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>) {
+    <span class="kw">return</span> <span class="cls">MaterialApp</span>(
+      <span class="var">home</span>: <span class="cls">Scaffold</span>(
+        <span class="var">appBar</span>: <span class="cls">AppBar</span>(<span class="var">title</span>: <span class="cls">Text</span>(<span class="str">'Provider Counter'</span>)),
+        <span class="var">body</span>: <span class="cls">Center</span>(
+          <span class="var">child</span>: <span class="cls">Consumer</span>&lt;<span class="cls">CounterProvider</span>&gt;(
+            <span class="var">builder</span>: (<span class="var">context</span>, <span class="var">counter</span>, <span class="var">child</span>) {
+              <span class="kw">return</span> <span class="cls">Text</span>(<span class="str">'Count: ${counter.count}'</span>, <span class="var">style</span>: <span class="cls">TextStyle</span>(<span class="var">fontSize</span>: <span class="num">24</span>));
+            },
+          ),
+        ),
+        <span class="var">floatingActionButton</span>: <span class="cls">FloatingActionButton</span>(
+          <span class="var">onPressed</span>: () {
+            <span class="cls">Provider</span>.<span class="fn">of</span>&lt;<span class="cls">CounterProvider</span>&gt;(<span class="var">context</span>, <span class="var">listen</span>: <span class="kw">false</span>).<span class="fn">increment</span>();
+          },
+          <span class="var">child</span>: <span class="cls">Icon</span>(<span class="cls">Icons</span>.<span class="var">add</span>),
+        ),
+      ),
+    );
+  }
+}
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 9 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 09</div>
+    <div class="chapter-title">Riverpod State Management</div>
+    <div class="chapter-desc">Provider का आधुनिक रूप — Riverpod। यह compile-time safe है, BuildContext पर निर्भर नहीं करता और flutter_riverpod का उपयोग करना बहुत आसान है।</div>
+  </div>
+
+  <h1>9.1 Provider Types in Riverpod</h1>
+  <ul>
+    <li><strong>Provider:</strong> Read-only value के लिए।</li>
+    <li><strong>StateProvider:</strong> Simple variables को modify करने के लिए।</li>
+    <li><strong>FutureProvider:</strong> Asynchronous API calls के लिए।</li>
+    <li><strong>StateNotifierProvider:</strong> Custom state classes और complexes logic के लिए।</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Riverpod Example</span>
+    </div>
+    <pre>
+<span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:flutter_riverpod/flutter_riverpod.dart'</span>;
+
+<span class="kw">final</span> <span class="var">counterStateProvider</span> = <span class="cls">StateProvider</span>&lt;<span class="kw">int</span>&gt;((<span class="var">ref</span>) => <span class="num">0</span>);
+
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="fn">runApp</span>(<span class="cls">ProviderScope</span>(<span class="var">child</span>: <span class="cls">MyApp</span>()));
+}
+
+<span class="kw">class</span> <span class="cls">MyApp</span> <span class="kw">extends</span> <span class="cls">ConsumerWidget</span> {
+  <span class="op">@override</span>
+  <span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> <span class="var">context</span>, <span class="cls">WidgetRef</span> <span class="var">ref</span>) {
+    <span class="kw">final</span> <span class="var">count</span> = <span class="var">ref</span>.<span class="fn">watch</span>(<span class="var">counterStateProvider</span>);
+    <span class="kw">return</span> <span class="cls">MaterialApp</span>(
+      <span class="var">home</span>: <span class="cls">Scaffold</span>(
+        <span class="var">appBar</span>: <span class="cls">AppBar</span>(<span class="var">title</span>: <span class="cls">Text</span>(<span class="str">'Riverpod Counter'</span>)),
+        <span class="var">body</span>: <span class="cls">Center</span>(<span class="var">child</span>: <span class="cls">Text</span>(<span class="str">'Count: $count'</span>, <span class="var">style</span>: <span class="cls">TextStyle</span>(<span class="var">fontSize</span>: <span class="num">24</span>))),
+        <span class="var">floatingActionButton</span>: <span class="cls">FloatingActionButton</span>(
+          <span class="var">onPressed</span>: () => <span class="var">ref</span>.<span class="fn">read</span>(<span class="var">counterStateProvider</span>.<span class="var">notifier</span>).<span class="var">state</span>++,
+          <span class="var">child</span>: <span class="cls">Icon</span>(<span class="cls">Icons</span>.<span class="var">add</span>),
+        ),
+      ),
+    );
+  }
+}
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 10 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 10</div>
+    <div class="chapter-title">Bloc & Cubit</div>
+    <div class="chapter-desc">Business Logic Component (BLOC) Pattern। यह Flutter की सबसे प्रसिद्ध enterprise-level state management framework है जो Events और States पर काम करती है।</div>
+  </div>
+
+  <h1>10.1 Cubit vs Bloc</h1>
+  <p><strong>Cubit:</strong> Simplistic form है। इसमें states को direct functions के द्वारा emit किया जाता है। Event class की आवश्यकता नहीं होती।</p>
+  <p><strong>Bloc:</strong> Event-driven architecture है। UI event trigger करती है, Bloc event process करता है और नई State emit करता है।</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — Cubit Example</span>
+    </div>
+    <pre>
+<span class="kw">import</span> <span class="str">'package:flutter_bloc/flutter_bloc.dart'</span>;
+
+<span class="kw">class</span> <span class="cls">CounterCubit</span> <span class="kw">extends</span> <span class="cls">Cubit</span>&lt;<span class="kw">int</span>&gt; {
+  <span class="fn">CounterCubit</span>() : <span class="kw">super</span>(<span class="num">0</span>);
+  <span class="kw">void</span> <span class="fn">increment</span>() => <span class="fn">emit</span>(<span class="var">state</span> + <span class="num">1</span>);
+  <span class="kw">void</span> <span class="fn">decrement</span>() => <span class="fn">emit</span>(<span class="var">state</span> - <span class="num">1</span>);
+}
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 11 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 11</div>
+    <div class="chapter-title">Redux State Management</div>
+    <div class="chapter-desc">Redux architecture — Single Source of Truth (Store), Actions, Reducers और Middleware के साथ unidirectional data flow।</div>
+  </div>
+
+  <h1>11.1 Redux Architecture</h1>
+  <p>Redux में पूरा application state एक single Object tree (Store) में रहता है। State read-only होती है और इसे बदलने के लिए explicit Action dispatch करना पड़ता है, जो Reducers (Pure Functions) द्वारा processed होकर new state बनाता है।</p>
+</div>
+
+<!-- ==================== CHAPTER 12 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 12</div>
+    <div class="chapter-title">GetX State Management</div>
+    <div class="chapter-desc">GetX: High-performance, lightweight, and runtime dependent reactive state manager with route management & dependency injection.</div>
+  </div>
+
+  <h1>12.1 Reactive State Management (Rx)</h1>
+  <p>GetX में Reactive variables बनाने के लिए <code>.obs</code> decorator का उपयोग किया जाता है और UI को update करने के लिए <code>Obx()</code> callback का उपयोग किया जाता है।</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">Dart — GetX Example</span>
+    </div>
+    <pre>
+<span class="kw">import</span> <span class="str">'package:get/get.dart'</span>;
+
+<span class="kw">class</span> <span class="cls">CounterController</span> <span class="kw">extends</span> <span class="cls">GetxController</span> {
+  <span class="kw">var</span> <span class="var">count</span> = <span class="num">0</span>.<span class="var">obs</span>;
+  <span class="kw">void</span> <span class="fn">increment</span>() => <span class="var">count</span>++;
+}
+
+<span class="cm">// UI implementation</span>
+<span class="cls">Obx</span>(() => <span class="cls">Text</span>(<span class="str">"Count: ${controller.count}"</span>));
+    </pre>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 13 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 13</div>
+    <div class="chapter-title">MobX State Management</div>
+    <div class="chapter-desc">MobX: Transparent Functional Reactive Programming (TFRP). Observables, Actions, Observers और Computed values को समझना।</div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 14 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 14</div>
+    <div class="chapter-title">Advanced State Management</div>
+    <div class="chapter-desc">Immutable State, State Normalization, Derived State, Optimistic UI, Cache Management और Infinite Scroll/Pagination State।</div>
+  </div>
+
+  <h1>14.1 Optimistic UI Updates</h1>
+  <p>जब user action परफॉर्म करता है, तब API request finish होने से पहले ही UI को successfully updated मानकर दिखा दिया जाता है, और error आने पर उसे roll-back किया जाता है। इसे <strong>Optimistic UI</strong> कहते हैं।</p>
+</div>
+
+<!-- ==================== CHAPTER 15 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 15</div>
+    <div class="chapter-title">API State Management</div>
+    <div class="chapter-desc">API calls के दौरान Loading, Success, Error States को Handle करना, Network Errors, Retry Logic और data local cache caching।</div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 16 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 16</div>
+    <div class="chapter-title">Authentication State Management</div>
+    <div class="chapter-desc">Login State, Session State, Auth Token (JWT) Management, Logout flow और Flutter Secure Storage में token encryption।</div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 17 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 17</div>
+    <div class="chapter-title">Performance Optimization</div>
+    <div class="chapter-desc">Unnecessary Rebuilds को रोकना, Memoization, Selector patterns का उपयोग करना और Lazy Loading techniques।</div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 18 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 18</div>
+    <div class="chapter-title">Clean Architecture with State Management</div>
+    <div class="chapter-desc">Presentation Layer, Domain Layer, Data Layer, Repository Pattern, Dependency Injection और industry-level standard folders structure.</div>
+  </div>
+
+  <h1>18.1 Clean Folders Structure</h1>
+  <pre>
+lib/
+├── data/
+│   ├── datasources/ (local/remote API)
+│   ├── models/
+│   └── repositories/
+├── domain/
+│   ├── entities/
+│   ├── repositories/ (abstract contracts)
+│   └── usecases/
+└── presentation/
+    ├── bloc/ (state management logic)
+    ├── pages/
+    └── widgets/
+  </pre>
+</div>
+
+<!-- ==================== CHAPTER 19 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 19</div>
+    <div class="chapter-title">Real Projects with Explanations</div>
+    <div class="chapter-desc">7 complete apps build walkthrough: Weather App, Auth App, Notes App, Cart App, Todo, Chat, and Counter.</div>
+  </div>
+</div>
+
+<!-- ==================== CHAPTER 20 ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 20</div>
+    <div class="chapter-title">State Management Comparison</div>
+    <div class="chapter-desc">विस्तृत तुलना: setState, Provider, Riverpod, Bloc, Cubit, GetX, Redux, MobX।</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Learning Curve</th>
+        <th>Performance</th>
+        <th>Complexity</th>
+        <th>Best Use Case</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>setState</td>
+        <td>Very Easy</td>
+        <td>Medium</td>
+        <td>Low</td>
+        <td>Single screens / local UI state</td>
+      </tr>
+      <tr>
+        <td>Provider</td>
+        <td>Easy</td>
+        <td>High</td>
+        <td>Medium</td>
+        <td>Small to medium size projects</td>
+      </tr>
+      <tr>
+        <td>Riverpod</td>
+        <td>Medium</td>
+        <td>Excellent</td>
+        <td>Medium</td>
+        <td>Modern, stable apps of any scale</td>
+      </tr>
+      <tr>
+        <td>Bloc / Cubit</td>
+        <td>Hard</td>
+        <td>Excellent</td>
+        <td>High</td>
+        <td>Enterprise-grade apps, teamwork</td>
+      </tr>
+      <tr>
+        <td>GetX</td>
+        <td>Very Easy</td>
+        <td>High</td>
+        <td>Low</td>
+        <td>Fast prototyping, small projects</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== BONUS SECTIONS ==================== -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num">Bonus</div>
+    <div class="chapter-title">Common Mistakes, Best Practices & Interview Preparation</div>
+    <div class="chapter-desc">100+ Interview Q&As, mind maps, cheat sheets, roadmaps, and common developer bugs to avoid.</div>
+  </div>
+
+  <h2>💡 Common Mistakes to Avoid</h2>
+  <ul>
+    <li><strong>Mistake 1:</strong> APIs directly inside <code>build()</code> method! (यह application को freeze/infinite request loop में डाल देता है)।</li>
+    <li><strong>Mistake 2:</strong> <code>setState()</code> on disposed controllers or contexts! (हमेशा check करें <code>if (mounted)</code>)।</li>
+    <li><strong>Mistake 3:</strong> Store controllers and instances globally without closing them, causing huge memory leaks.</li>
+  </ul>
+
+  <h2>🎓 100+ Interview Preparation Questions (Sample)</h2>
+  <div class="qa-section">
+    <div class="qa-item">
+      <div class="qa-question">
+        <div class="qa-q-num">Q1</div>
+        <span>What is the main difference between Provider and Riverpod?</span>
+      </div>
+      <div class="qa-answer">
+        Riverpod doesn't rely on BuildContext, meaning it can be read from anywhere. It checks errors during compile-time rather than runtime, solving multiple Provider issues like ProviderNotFoundException.
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-question">
+        <div class="qa-q-num">Q2</div>
+        <span>What are reactive streams?</span>
+      </div>
+      <div class="qa-answer">
+        Streams are sequences of asynchronous events. Modern state management systems like MobX, Bloc, and GetX utilize streams/observables to automatically broadcast updates to UI components subscribing to them.
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
