@@ -1,5 +1,15 @@
 # 🍽️ Pandey Foods - Smart Restaurant Ordering System
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_App-brightgreen?style=for-the-badge&logo=flutter&logoColor=white)](https://akash80047.github.io/Dine-Easy/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Deployed-blue?style=for-the-badge&logo=github)](https://akash80047.github.io/Dine-Easy/)
+
+---
+
+### 🌐 **Live Website Link:**
+👉 **[https://akash80047.github.io/Dine-Easy/](https://akash80047.github.io/Dine-Easy/)**
+
+---
+
 Pandey Foods is a cross-platform restaurant ordering and management application built using **Flutter** and **Dart**.
 
 The application provides two different interfaces:
